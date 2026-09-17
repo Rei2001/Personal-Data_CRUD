@@ -1,97 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Data Pribadi</title>
+
+    <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <style>
-        .search-box { background-color: #fce4d6; padding: 20px; border: 1px solid #a5a5a5; margin-bottom: 15px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f9;
+            color: #2b2d42;
+        }
+
+        .app-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+        }
+
+        .search-container {
+            background-color: #fff8f0;
+            border: 1px solid #ffe8d6;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .table-custom {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table-custom thead {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+        .badge-gender {
+            font-size: 0.8rem;
+            padding: 0.4em 0.8em;
+            border-radius: 6px;
+        }
+
+        .btn-action {
+            font-weight: 500;
+            font-size: 0.825rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <div class="container border p-4 bg-light">
-        <h3 class="mb-4">📋 Aplikasi Data Pribadi</h3>
+    <!-- NAVBAR HEADER -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-person-vcard text-warning me-2"></i>DataPribadi App
+            </a>
+            <span class="navbar-text text-light small">
+                Developed by <strong class="text-warning">Muhammad Rayhan</strong>
+            </span>
+        </div>
+    </nav>
 
-        <div id="monitoringView">
-            <div class="search-box">
-                <div class="row mb-2">
-                    <label class="col-sm-1 col-form-label font-weight-bold">NIK</label>
-                    <div class="col-sm-4"><input type="number" id="searchNik" class="form-control form-control-sm"></div>
-                </div>
-                <div class="row">
-                    <label class="col-sm-1 col-form-label">Nama</label>
-                    <div class="col-sm-4"><input type="text" id="searchNama" class="form-control form-control-sm"></div>
+    <div class="container pb-5">
+
+        <!-- ================= MONITORING VIEW ================= -->
+        <div id="monitoringView" class="card app-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold m-0"><i class="bi bi-folder2-open text-primary me-2"></i>Aplikasi Data Pribadi</h4>
+                <button class="btn btn-primary px-3 shadow-sm" onclick="showForm('add')">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Data
+                </button>
+            </div>
+
+            <!-- Filter Search Box -->
+            <div class="search-container mb-4">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-card-heading text-muted"></i></span>
+                            <input type="number" id="searchNik" class="form-control" placeholder="Cari berdasarkan NIK...">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="searchNama" class="form-control" placeholder="Cari berdasarkan Nama...">
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button class="btn btn-warning fw-semibold text-dark" onclick="loadData()">
+                            <i class="bi bi-funnel"></i> Search
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2 mb-3">
-                <button class="btn btn-primary btn-sm px-4" onclick="loadData()">Search</button>
-                <button class="btn btn-primary btn-sm px-4" onclick="showForm('add')">Add</button>
-            </div>
-
-            <table class="table table-bordered table-striped text-center align-middle bg-white">
-                <thead class="table-secondary">
-                    <tr>
-                        <th>No</th><th>NIK</th><th>Nama Lengkap</th><th>Umur</th><th>Tanggal Lahir</th>
-                        <th>Jenis Kelamin</th><th>Alamat</th><th>Negara</th><th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="apiTableBody">
+            <!-- Data Table -->
+            <div class="table-responsive table-custom">
+                <table class="table table-hover align-middle mb-0 bg-white">
+                    <thead>
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th>NIK</th>
+                            <th>Nama Lengkap</th>
+                            <th class="text-center">Umur</th>
+                            <th>Tanggal Lahir</th>
+                            <th class="text-center">Jenis Kelamin</th>
+                            <th>Alamat</th>
+                            <th>Negara</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apiTableBody">
+                        <!-- AJAX Data Render In Here -->
                     </tbody>
-            </table>
+                </table>
+            </div>
         </div>
 
-        <div id="formView" style="display: none;" class="col-md-6">
-            <h4 id="formTitle" class="mb-3">Tambah Data Baru</h4>
-            <form id="dataForm">
-                <div class="mb-3">
-                    <label class="form-label">NIK <span class="text-danger">*</span></label>
-                    <input type="number" id="nik" class="form-control" required>
+        <!-- ================= FORM VIEW (ADD / EDIT / DETAIL) ================= -->
+        <div id="formView" style="display: none;" class="col-md-7 mx-auto">
+            <div class="card app-card">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h4 id="formTitle" class="fw-bold text-primary m-0">Tambah Data Baru</h4>
+                    <p class="text-muted small mb-0">Silakan isi formulir data pribadi di bawah ini.</p>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                    <input type="text" id="namaLengkap" class="form-control" required>
+                <div class="card-body px-4 pb-4">
+                    <form id="dataForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium"><i class="bi bi-card-heading text-primary"></i> NIK <span class="text-danger">*</span></label>
+                                <input type="number" id="nik" class="form-control" placeholder="337005..." required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium"><i class="bi bi-person text-primary"></i> Nama Lengkap <span class="text-danger">*</span></label>
+                                <input type="text" id="namaLengkap" class="form-control" placeholder="Masukkan nama lengkap" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium d-block"><i class="bi bi-gender-ambiguous text-primary"></i> Jenis Kelamin</label>
+                                <div class="form-check form-check-inline mt-1">
+                                    <input class="form-check-input" type="radio" name="jenisKelamin" id="jkL" value="Laki-Laki" checked>
+                                    <label class="form-check-label" for="jkL">Laki-laki</label>
+                                </div>
+                                <div class="form-check form-check-inline mt-1">
+                                    <input class="form-check-input" type="radio" name="jenisKelamin" id="jkP" value="Perempuan">
+                                    <label class="form-check-label" for="jkP">Perempuan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium"><i class="bi bi-calendar-event text-primary"></i> Tanggal Lahir</label>
+                                <input type="date" id="tanggalLhir" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-medium"><i class="bi bi-geo-alt text-primary"></i> Alamat</label>
+                                <textarea id="alamat" class="form-control" rows="3" placeholder="Alamat domisili lengkap..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-medium"><i class="bi bi-globe text-primary"></i> Negara</label>
+                                <select id="negara" class="form-select">
+                                    <option value="">Pilih Negara</option>
+                                    <option value="Indonesia">Indonesia</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="Portugal">Portugal</option>
+                                    <option value="Rusia">Rusia</option>
+                                    <option value="Malaysia">Malaysia</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                            <button type="submit" id="btnSubmit" class="btn btn-primary px-4"><i class="bi bi-save me-1"></i> Simpan</button>
+                            <button type="button" class="btn btn-light border px-4" onclick="hideForm()"><i class="bi bi-arrow-left me-1"></i> Kembali</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label d-block">Jenis Kelamin</label>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="jenisKelamin" id="jkL" value="Laki-Laki" checked>
-                        <label class="form-check-label" for="jkL">Laki-laki</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="jenisKelamin" id="jkP" value="Perempuan">
-                        <label class="form-check-label" for="jkP">Perempuan</label>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Tanggal Lahir</label>
-                    <input type="date" id="tanggalLhir" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Alamat</label>
-                    <textarea id="alamat" class="form-control" rows="3"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Negara</label>
-                    <select id="negara" class="form-select">
-                        <option value="">Pilih Negara</option>
-                        <option value="Indonesia">Indonesia</option>
-                        <option value="Argentina">Argentina</option>
-                        <option value="Portugal">Portugal</option>
-                        <option value="Rusia">Rusia</option>
-                        <option value="Malaysia">Malaysia</option>
-                    </select>
-                </div>
-                <div class="mt-4">
-                    <button type="submit" id="btnSubmit" class="btn btn-primary px-4">Simpan</button>
-                    <button type="button" class="btn btn-secondary px-4" onclick="hideForm()">Kembali</button>
-                </div>
-            </form>
+            </div>
         </div>
+
     </div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ================= JQUERY LOGIC ================= -->
     <script>
         const API_URL = "/api/data-pribadi";
         let currentMode = "add";
@@ -99,7 +205,7 @@
         $(document).ready(function() {
             loadData();
 
-            // Handle Submit Form (Tambah / Edit)
+            // Submit Form Handler
             $("#dataForm").on("submit", function(e) {
                 e.preventDefault();
                 
@@ -138,31 +244,49 @@
             
             $.get(API_URL, { nik: nik, nama: nama }, function(data) {
                 let rows = "";
-                data.forEach((item, index) => {
-                    // Format Tanggal ke DD-Mon-YY jika ada
-                    let tglFormatted = "-";
-                    if(item.tanggalLahir) {
-                        let d = new Date(item.tanggalLahir);
-                        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                        tglFormatted = `${String(d.getDate()).padStart(2, '0')}-${months[d.getMonth()]}-${String(d.getFullYear()).slice(-2)}`;
-                    }
+                if(data.length === 0) {
+                    rows = `<tr><td colspan="9" class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i> Tidak ada data ditemukan</td></tr>`;
+                } else {
+                    data.forEach((item, index) => {
+                        let tglFormatted = "-";
+                        if(item.tanggalLahir) {
+                            let d = new Date(item.tanggalLahir);
+                            const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                            tglFormatted = `${String(d.getDate()).padStart(2, '0')}-${months[d.getMonth()]}-${String(d.getFullYear()).slice(-2)}`;
+                        }
 
-                    rows += `<tr>
-                        <td>${index + 1}</td>
-                        <td>${item.nik}</td>
-                        <td>${item.namaLengkap}</td>
-                        <td>${item.umur}</td>
-                        <td>${tglFormatted}</td>
-                        <td>${item.jenisKelamin || '-'}</td>
-                        <td>${item.alamat || '-'}</td>
-                        <td>${item.negara || '-'}</td>
-                        <td>
-                            <a href="#" class="text-warning text-decoration-none fw-bold me-2" onclick="viewData(${item.nik}, 'detail')">Detail</a>
-                            <a href="#" class="text-primary text-decoration-none fw-bold me-2" onclick="viewData(${item.nik}, 'edit')">Edit</a>
-                            <a href="#" class="text-danger text-decoration-none fw-bold" onclick="deleteData(${item.nik}, '${item.namaLengkap}')">Delete</a>
-                        </td>
-                    </tr>`;
-                });
+                        // Badge Jenis Kelamin
+                        let genderBadge = item.jenisKelamin === 'Laki-Laki' 
+                            ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle badge-gender"><i class="bi bi-gender-male"></i> Laki-Laki</span>`
+                            : item.jenisKelamin === 'Perempuan'
+                            ? `<span class="badge bg-danger-subtle text-danger border border-danger-subtle badge-gender"><i class="bi bi-gender-female"></i> Perempuan</span>`
+                            : '-';
+
+                        rows += `<tr>
+                            <td class="text-center fw-bold text-secondary">${index + 1}</td>
+                            <td class="fw-semibold">${item.nik}</td>
+                            <td class="fw-medium">${item.namaLengkap}</td>
+                            <td class="text-center"><span class="badge bg-light text-dark border">${item.umur} Thn</span></td>
+                            <td>${tglFormatted}</td>
+                            <td class="text-center">${genderBadge}</td>
+                            <td class="small text-muted">${item.alamat || '-'}</td>
+                            <td><span class="badge bg-secondary-subtle text-secondary">${item.negara || '-'}</span></td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-info btn-action" title="Detail Data" onclick="viewData(${item.nik}, 'detail')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-action" title="Edit Data" onclick="viewData(${item.nik}, 'edit')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-action" title="Hapus Data" onclick="deleteData(${item.nik}, '${item.namaLengkap}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                }
                 $("#apiTableBody").html(rows);
             });
         }
@@ -175,12 +299,11 @@
             $("#nik").prop("disabled", false);
             $("#btnSubmit").show();
             
-            // Set input state default enable
             $("#dataForm input, #dataForm textarea, #dataForm select").prop("disabled", false);
 
             if(mode === 'add') {
                 $("#formTitle").text("Tambah Data Baru");
-                $("#btnSubmit").text("Simpan");
+                $("#btnSubmit").html('<i class="bi bi-save me-1"></i> Simpan');
             }
         }
 
@@ -191,7 +314,7 @@
 
         function viewData(nik, mode) {
             showForm(mode);
-            $("#nik").prop("disabled", true); // NIK tidak boleh diedit karena PK
+            $("#nik").prop("disabled", true);
 
             $.get(API_URL + "/" + nik, function(data) {
                 $("#nik").val(data.nik);
@@ -203,18 +326,16 @@
 
                 if(mode === 'edit') {
                     $("#formTitle").text("Edit Data Pribadi");
-                    $("#btnSubmit").text("Ubah");
+                    $("#btnSubmit").html('<i class="bi bi-pencil-square me-1"></i> Ubah');
                 } else if(mode === 'detail') {
                     $("#formTitle").text("Detail Data Pribadi");
                     $("#btnSubmit").hide();
-                    // Disable semua field jika mode detail
                     $("#dataForm input, #dataForm textarea, #dataForm select").prop("disabled", true);
                 }
             });
         }
 
         function deleteData(nik, nama) {
-            // Sesuai mockup konfirmasi hapus data
             if (confirm(`Anda yakin menghapus data ${nama} ?`)) {
                 $.ajax({
                     url: API_URL + "/" + nik,

@@ -1,0 +1,3 @@
+com\assessment\datapribadi\controller\DataPribadiController.class
+com\assessment\datapribadi\repository\DataPribadiRepository.class
+com\assessment\datapribadi\model\DataPribadi.class
